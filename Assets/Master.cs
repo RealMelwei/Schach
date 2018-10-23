@@ -81,6 +81,12 @@ public class Master : MonoBehaviour
     public bool LoadNextTurn = false;
     Comfort C = new Comfort();
 
+    void Awake()
+    {
+        if (Application.isEditor)
+            Application.runInBackground = true;
+    }
+
     /// <summary>
     /// Setzt die Startstellung
     /// </summary>

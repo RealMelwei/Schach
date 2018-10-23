@@ -469,7 +469,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 704981352ca8855449cd034e848c68fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Vorausbrechnungsrange: 1
+  Vorausbrechnungsrange: 2
   DebugModus: 0
 --- !u!1 &1077355814
 GameObject:
