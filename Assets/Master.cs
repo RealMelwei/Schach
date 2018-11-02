@@ -270,9 +270,9 @@ public class Master : MonoBehaviour
         {
             if (AI1IsPC)
             {
-                double timeNow = System.DateTime.Now.Millisecond + System.DateTime.Now.Second * 1000 + System.DateTime.Now.Minute * 60000 + System.DateTime.Now.Hour * 60000 * 24;
+                double timeNow = System.DateTime.Now.Millisecond + System.DateTime.Now.Second * 1000 + System.DateTime.Now.Minute * 60000 + System.DateTime.Now.Hour * 60000 * 60;
                 Zug zug = AI1.ziehe(Situ.Clone()).Clone();
-                double timeNowNew = System.DateTime.Now.Millisecond + System.DateTime.Now.Second * 1000 + System.DateTime.Now.Minute * 60000 + System.DateTime.Now.Hour * 60000 * 24; Debug.Log("Time needed: " + (timeNowNew-timeNow));
+                double timeNowNew = System.DateTime.Now.Millisecond + System.DateTime.Now.Second * 1000 + System.DateTime.Now.Minute * 60000 + System.DateTime.Now.Hour * 60000 * 60; Debug.Log("Time needed: " + (timeNowNew-timeNow));
                 if (!C.ZugLegal(Situ, zug, true, false))
                 {
                     Debug.LogError("Falscher Zug von Weiß");
@@ -343,9 +343,9 @@ public class Master : MonoBehaviour
         {
             if (AI2IsPC)
             {
-                double timeNow = System.DateTime.Now.Millisecond + System.DateTime.Now.Second * 1000 + System.DateTime.Now.Minute * 60000 + System.DateTime.Now.Hour * 60000 * 24;
+                double timeNow = System.DateTime.Now.Millisecond + System.DateTime.Now.Second * 1000 + System.DateTime.Now.Minute * 60000 + System.DateTime.Now.Hour * 60000 * 60;
                 Zug zug = AI2.ziehe(Situ.Clone()).Clone();
-                double timeNowNew = System.DateTime.Now.Millisecond + System.DateTime.Now.Second * 1000 + System.DateTime.Now.Minute * 60000 + System.DateTime.Now.Hour * 60000 * 24;
+                double timeNowNew = System.DateTime.Now.Millisecond + System.DateTime.Now.Second * 1000 + System.DateTime.Now.Minute * 60000 + System.DateTime.Now.Hour * 60000 * 60;
                 Debug.Log("Time needed: " + (timeNowNew-timeNow));
                 if (!C.ZugLegal(Situ, zug, true, false))
                 {

@@ -7,6 +7,7 @@ public class AI2 : AI
     Comfort C = new Comfort();
 
     public int Berechnungstiefe = 3;
+    public int Tiefensuchentiefe = 3;
 
     //Wirkungsstärken der verschiedenen Subfunktionen der Stellungsbewertung
     const float kMaterial = 1; //Wie stark wird der Materialvorteil in die Stellung eingebunden? Basis: 1
@@ -17,10 +18,10 @@ public class AI2 : AI
     public override Zug ziehe(Situation sit)
     {
 
-        return BesterZugBruteForce(Berechnungstiefe, sit);
+        return BesterZugBruteForce(Berechnungstiefe, sit, Tiefensuchentiefe);
     }
 
-    Zug BesterZugBruteForce(int Iterationen, Situation sit)
+    Zug BesterZugBruteForce(int Iterationen, Situation sit, int Tiefeniteration)
     {
         if (Iterationen <= 1)
         {
@@ -50,6 +51,11 @@ public class AI2 : AI
         {
             float BewertungStart = Stellungsbewertung(sit);
             Zug[] Machbar = C.AlleMöglichenZüge(sit, true);
+
+            if (Machbar.Length == 0)
+            {
+                return null;
+            }
             Zug Bester = Machbar[0];
             float BesterZugBewertung = float.MinValue;
             for (int i = 0; i < Machbar.Length; i++)
@@ -57,36 +63,98 @@ public class AI2 : AI
                 Situation sit2 = sit.Clone();
                 sit2.Forward(Machbar[i]);
                 float Quali = float.MinValue;
-                Zug BesterInSit2 = BesterZugBruteForce(Iterationen - 1, sit2);
-                if (BesterInSit2 == null)
+                bool Schachzug = C.IstImSchach(sit2, sit2.SpielerID);
+                if ((!Schachzug&&sit.Stellung[Machbar[i].Ziel[0],Machbar[i].Ziel[1]].Typ!="")||Tiefeniteration<=0)
                 {
-                    if (C.IstImSchach(sit2, sit2.SpielerID))
+                    Zug BesterInSit2 = BesterZugBruteForce(Iterationen - 1, sit2, Tiefeniteration);
+                    if (BesterInSit2 == null)
                     {
-                        return Machbar[i];
+                        if (C.IstImSchach(sit2, sit2.SpielerID))
+                        {
+                            return Machbar[i];
+                        }
+                        else
+                        {
+                            if (BesterZugBewertung < 0)
+                            {
+                                BesterZugBewertung = 0;
+                                Bester = Machbar[i];
+                            }
+                        }
                     }
                     else
                     {
-                        if (BesterZugBewertung < 0)
+                        sit2.Forward(BesterInSit2);
+                        Quali = Stellungsbewertung(sit2);
+                        if (Quali > BesterZugBewertung)
                         {
-                            BesterZugBewertung = 0;
+                            BesterZugBewertung = Quali;
+                            Bester = Machbar[i];
+                        }
+                    }
+                }
+                else if (Schachzug)
+                {
+                    Zug BesterInSit2 = BesterZugBruteForce(Iterationen+1, sit2, Tiefeniteration-1);
+                    if (BesterInSit2 == null)
+                    {
+                        if (C.IstImSchach(sit2, sit2.SpielerID))
+                        {
+                            return Machbar[i];
+                        }
+                        else
+                        {
+                            if (BesterZugBewertung < 0)
+                            {
+                                BesterZugBewertung = 0;
+                                Bester = Machbar[i];
+                            }
+                        }
+                    }
+                    else
+                    {
+                        sit2.Forward(BesterInSit2);
+                        Quali = Stellungsbewertung(sit2);
+                        if (Quali > BesterZugBewertung)
+                        {
+                            BesterZugBewertung = Quali;
                             Bester = Machbar[i];
                         }
                     }
                 }
                 else
                 {
-                    sit2.Forward(BesterInSit2);
-                    Quali = Stellungsbewertung(sit2);
-                    if (Quali > BesterZugBewertung)
+                    Zug BesterInSit2 = BesterZugBruteForce(Iterationen, sit2, Tiefeniteration - 2);
+                    if (BesterInSit2 == null)
                     {
-                        BesterZugBewertung = Quali;
-                        Bester = Machbar[i];
+                        if (C.IstImSchach(sit2, sit2.SpielerID))
+                        {
+                            return Machbar[i];
+                        }
+                        else
+                        {
+                            if (BesterZugBewertung < 0)
+                            {
+                                BesterZugBewertung = 0;
+                                Bester = Machbar[i];
+                            }
+                        }
+                    }
+                    else
+                    {
+                        sit2.Forward(BesterInSit2);
+                        Quali = Stellungsbewertung(sit2);
+                        if (Quali > BesterZugBewertung)
+                        {
+                            BesterZugBewertung = Quali;
+                            Bester = Machbar[i];
+                        }
                     }
                 }
+
             }
             return Bester;
         }
-
     }
 
 
